@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -31,7 +32,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private Transform[] _enemyPaths;
     [SerializeField] private float _spawnDelay = 5f;
 
-    private List<Enemy> _spawnedEnemies = new List<Enemy> ();
+    [SerializeField] private int _maxEnemiesInScene = 5;
+    private Queue<Enemy> _spawnedEnemiesQueue = new Queue<Enemy>();
     private float _runningSpawnDelay;
 
     private List<Bullet> _spawnedBullets = new List<Bullet> ();
@@ -74,24 +76,33 @@ public class LevelManager : MonoBehaviour
         // Counter untuk spawn enemy dalam jeda waktu yang ditentukan
         // Time.unscaledDeltaTime adalah deltaTime yang independent, tidak terpengaruh oleh apapun kecuali game object itu sendiri,
         // jadi bisa digunakan sebagai penghitung waktu
-        _runningSpawnDelay -= Time.unscaledDeltaTime;
-        if (_runningSpawnDelay <= 0f)
+        if (_spawnedEnemiesQueue.Count < _maxEnemiesInScene)
         {
-            SpawnEnemy ();
-            _runningSpawnDelay = _spawnDelay;
+            _runningSpawnDelay -= Time.unscaledDeltaTime;
+            if (_runningSpawnDelay <= 0f)
+            {
+                SpawnEnemy();
+                _runningSpawnDelay = _spawnDelay;
+            }
         }
+
 
         foreach (Tower tower in _spawnedTowers)
         {
-            tower.CheckNearestEnemy (_spawnedEnemies);
+            tower.CheckNearestEnemy (_spawnedEnemiesQueue);
             tower.SeekTarget ();
             tower.ShootTarget ();
         }
 
-        foreach (Enemy enemy in _spawnedEnemies)
+        // Xử lý các enemy trong queue
+        int enemiesCount = _spawnedEnemiesQueue.Count;
+
+        for (int i = 0; i < enemiesCount; i++)
         {
+            Enemy enemy = _spawnedEnemiesQueue.Peek();
             if (!enemy.gameObject.activeSelf)
             {
+                _spawnedEnemiesQueue.Dequeue();
                 continue;
             }
 
@@ -115,6 +126,9 @@ public class LevelManager : MonoBehaviour
             {
                 enemy.MoveToTarget ();
             }
+
+            _spawnedEnemiesQueue.Enqueue(enemy); // Enqueue enemy vừa được xử lý vào cuối queue
+            _spawnedEnemiesQueue.Dequeue(); // Dequeue enemy đầu tiên để xử lý enemy tiếp theo trong queue
         }
     }
 
@@ -138,10 +152,11 @@ public class LevelManager : MonoBehaviour
 
     private void SpawnEnemy ()
     {
+        Debug.Log("Run Spawn");
         SetTotalEnemy (--_enemyCounter);
         if (_enemyCounter < 0)
         {
-            bool isAllEnemyDestroyed = _spawnedEnemies.Find (e => e.gameObject.activeSelf) == null;
+            bool isAllEnemyDestroyed = _spawnedEnemiesQueue.FirstOrDefault(e => e.gameObject.activeSelf) == null;
             if (isAllEnemyDestroyed)
             {
                 SetGameOver (true);
@@ -151,16 +166,16 @@ public class LevelManager : MonoBehaviour
 
         int randomIndex = Random.Range (0, _enemyPrefabs.Length);
         string enemyIndexString = (randomIndex + 1).ToString ();
-        GameObject newEnemyObj = _spawnedEnemies.Find (e => !e.gameObject.activeSelf && e.name.Contains (enemyIndexString))?.gameObject;
+        GameObject newEnemyObj = _spawnedEnemiesQueue.FirstOrDefault(e => !e.gameObject.activeSelf && e.name.Contains(enemyIndexString))?.gameObject;
         if (newEnemyObj == null)
         {
             newEnemyObj = Instantiate (_enemyPrefabs[randomIndex].gameObject);
         }
 
         Enemy newEnemy = newEnemyObj.GetComponent<Enemy> ();
-        if (!_spawnedEnemies.Contains (newEnemy))
+        if (!_spawnedEnemiesQueue.Contains (newEnemy))
         {
-            _spawnedEnemies.Add (newEnemy);
+            _spawnedEnemiesQueue.Enqueue(newEnemy);
         }
 
         newEnemy.transform.position = _enemyPaths[0].position;
@@ -199,7 +214,7 @@ public class LevelManager : MonoBehaviour
 
     public void ExplodeAt (Vector2 point, float radius, int damage)
     {
-        foreach (Enemy enemy in _spawnedEnemies)
+        foreach (Enemy enemy in _spawnedEnemiesQueue)
         {
             if (enemy.gameObject.activeSelf)
             {
