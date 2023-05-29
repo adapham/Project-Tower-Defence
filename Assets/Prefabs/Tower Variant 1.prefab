@@ -7,37 +7,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 8124858492870805638, guid: fc3f2c1e6a34b51408c68254a94fb798,
+    - target: {fileID: 3080038064184856414, guid: fc3f2c1e6a34b51408c68254a94fb798,
         type: 3}
-      propertyPath: m_Name
-      value: Tower Variant 1
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 5253475726140242948, guid: fc3f2c1e6a34b51408c68254a94fb798,
+    - target: {fileID: 4350693425056669847, guid: fc3f2c1e6a34b51408c68254a94fb798,
         type: 3}
-      propertyPath: _towerPlace
-      value: 
-      objectReference: {fileID: 5822840326096597080}
-    - target: {fileID: 5253475726140242948, guid: fc3f2c1e6a34b51408c68254a94fb798,
-        type: 3}
-      propertyPath: _towerHead
-      value: 
-      objectReference: {fileID: 9165994954570549672}
-    - target: {fileID: 5253475726140242948, guid: fc3f2c1e6a34b51408c68254a94fb798,
-        type: 3}
-      propertyPath: _shootPower
-      value: 2
+      propertyPath: m_RootOrder
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5253475726140242948, guid: fc3f2c1e6a34b51408c68254a94fb798,
-        type: 3}
-      propertyPath: _shootDelay
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5253475726140242948, guid: fc3f2c1e6a34b51408c68254a94fb798,
-        type: 3}
-      propertyPath: _bulletPrefab
-      value: 
-      objectReference: {fileID: 2701372348719617435, guid: 857551dff495d2f4985161ed78fb2adc,
-        type: 3}
     - target: {fileID: 4350693425056669847, guid: fc3f2c1e6a34b51408c68254a94fb798,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -52,6 +31,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4350693425056669847, guid: fc3f2c1e6a34b51408c68254a94fb798,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4350693425056669847, guid: fc3f2c1e6a34b51408c68254a94fb798,
         type: 3}
@@ -70,16 +54,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4350693425056669847, guid: fc3f2c1e6a34b51408c68254a94fb798,
         type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4350693425056669847, guid: fc3f2c1e6a34b51408c68254a94fb798,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4350693425056669847, guid: fc3f2c1e6a34b51408c68254a94fb798,
-        type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
@@ -92,6 +66,37 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5253475726140242948, guid: fc3f2c1e6a34b51408c68254a94fb798,
+        type: 3}
+      propertyPath: _towerHead
+      value: 
+      objectReference: {fileID: 9165994954570549672}
+    - target: {fileID: 5253475726140242948, guid: fc3f2c1e6a34b51408c68254a94fb798,
+        type: 3}
+      propertyPath: _shootDelay
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5253475726140242948, guid: fc3f2c1e6a34b51408c68254a94fb798,
+        type: 3}
+      propertyPath: _shootPower
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5253475726140242948, guid: fc3f2c1e6a34b51408c68254a94fb798,
+        type: 3}
+      propertyPath: _towerPlace
+      value: 
+      objectReference: {fileID: 5822840326096597080}
+    - target: {fileID: 5253475726140242948, guid: fc3f2c1e6a34b51408c68254a94fb798,
+        type: 3}
+      propertyPath: _bulletPrefab
+      value: 
+      objectReference: {fileID: 2701372348719617435, guid: 857551dff495d2f4985161ed78fb2adc,
+        type: 3}
+    - target: {fileID: 8124858492870805638, guid: fc3f2c1e6a34b51408c68254a94fb798,
+        type: 3}
+      propertyPath: m_Name
+      value: Tower Variant 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc3f2c1e6a34b51408c68254a94fb798, type: 3}
