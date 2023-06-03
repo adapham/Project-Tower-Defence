@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -30,9 +31,9 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private Enemy[] _enemyPrefabs;
     [SerializeField] private Transform[] _enemyPaths;
-    [SerializeField] private float _spawnDelay = 5f;
+    //[SerializeField] private float _spawnDelay = 5f;
 
-    [SerializeField] private int _maxEnemiesInScene = 5;
+    //[SerializeField] private int _maxEnemiesInScene = 5;
     private Queue<Enemy> _spawnedEnemiesQueue = new Queue<Enemy>();
     private float _runningSpawnDelay;
 
@@ -40,8 +41,8 @@ public class LevelManager : MonoBehaviour
 
     public bool IsOver { get; private set; }
 
-    [SerializeField] private int _maxLives = 3;
-    [SerializeField] private int _totalEnemy = 15;
+    //[SerializeField] private int _maxLives = 3;
+    //[SerializeField] private int _totalEnemy = 15;
 
     [SerializeField] private GameObject _panel;
     [SerializeField] private Text _statusInfo;
@@ -51,12 +52,50 @@ public class LevelManager : MonoBehaviour
     private int _currentLives;
     private int _enemyCounter;
 
+    //Set Data IO
+    // configuration data
+    static ConfigurationData configurationData;
+    public static float _spawnDelay
+    {
+        get
+        {
+            return configurationData.SpawnDelay;
+        }
+    }
+    public static int _maxEnemiesInScene
+    {
+        get
+        {
+            return configurationData.MaxEnemiesInScene;
+        }
+    }
+    static int _maxLives
+    {
+        get
+        {
+            return configurationData.MaxLives;
+        }
+    }
+    static int _totalEnemy
+    {
+        get { 
+            return configurationData.TotalEnemy;
+        }
+    }
+
     // Start is called before the first frame update
     private void Start()
     {
+        configurationData = new ConfigurationData();
+        Debug.Log("1: " + _spawnDelay);
+        Debug.Log("2: " + _maxEnemiesInScene);
+        Debug.Log("3: " + _maxLives);
+        Debug.Log("4: " + _totalEnemy);
+
         SetCurrentLives (_maxLives);
         SetTotalEnemy (_totalEnemy);
         InstantiateAllTowerUI ();
+
     }
 
     // Update is called once per frame

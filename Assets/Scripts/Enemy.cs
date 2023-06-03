@@ -27,7 +27,6 @@ public class Enemy : MonoBehaviour
     }
 
     //Tạo mỗi lần tạo hoạt ảnh cho đối tượng
-    // Fungsi ini terpanggil sekali setiap kali menghidupkan game object yang memiliki script ini
     private void OnEnable ()
     {
         _currentHealth = _maxHealth; //Set máu tối đa
@@ -40,48 +39,44 @@ public class Enemy : MonoBehaviour
         transform.position = Vector3.MoveTowards (transform.position, TargetPosition, _moveSpeed * Time.deltaTime);
     }
 
-    //Thiết lập vị trí đích (TargetPosition) cho đối tượng Enemy và xoay đối tượng Enemy
-    //để hướng về vị trí đích. Trong phương thức này, _healthBar
-    //được gỡ bỏ khỏi đối tượng Enemy để không bị xoay cùng với đối tượng Enemy.
+    //Đặt ví trí mục tiêu cho Enemy.
     public void SetTargetPosition (Vector3 targetPosition)
     {
         TargetPosition = targetPosition;
-        _healthBar.transform.parent = null;
+        _healthBar.transform.parent = null;//Tách máu và enemy không bị che khi quay hướng
 
-        // Mengubah rotasi dari enemy
+        //Tính toán khoảng cách vị trí hiện tại và mục tiêu
         Vector3 distance = TargetPosition - transform.position;
+
+        //Tính toán khoảng cách trục x và y: y > x quay xuống dưới
         if (Mathf.Abs (distance.y) > Mathf.Abs (distance.x))
         {
-            // Menghadap atas
+            // Đổi mặt
             if (distance.y > 0)
             {
                 transform.rotation = Quaternion.Euler (new Vector3 (0f, 0f, 90f));
             }
 
-            // Menghadap bawah
             else
             {
                 transform.rotation = Quaternion.Euler (new Vector3 (0f, 0f, -90f));
             }
         }
-        else
+        else//x > y quay lên trên
         {
-            // Menghadap kanan (default)
             if (distance.x > 0)
             {
                 transform.rotation = Quaternion.Euler (new Vector3 (0f, 0f, 0f));
             }
 
-            // Menghadap kiri
             else
             {
                 transform.rotation = Quaternion.Euler (new Vector3 (0f, 0f, 180f));
             }
         }
-        _healthBar.transform.parent = transform;
+        _healthBar.transform.parent = transform; //Đặt máu trở lại
     }
 
-    // Menandai indeks terakhir pada path
     //Thiết lập chỉ số củađường đi hiện tại (CurrentPathIndex) mà đối tượng Enemy đang đi trên.
     public void SetCurrentPathIndex (int currentIndex)
     {
@@ -89,9 +84,6 @@ public class Enemy : MonoBehaviour
     }
 
     //Giảm số máu của đối tượng Enemy khi bị tấn công bằng một lượng sát thương (damage) đã xác định.
-    //Nếu số máu của đối tượng Enemy giảm xuống dưới 0, đối tượng Enemy sẽ bị đánh bại
-    //(gameObject.SetActive(false)) và thanh máu (_healthFill) sẽ được thiết lập để hiển thị đầy đủ.
-    ///Nếu số máu của đối tượng Enemy vẫn còn, thanh máu sẽ được cập nhật lại để hiển thị phần máu còn lại.
     public void ReduceEnemyHealth (int damage)
     {
         _currentHealth -= damage;

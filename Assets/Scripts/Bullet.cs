@@ -62,7 +62,7 @@ public class Bullet : MonoBehaviour
             gameObject.SetActive (false);//Hủy đạn
 
             if (_bulletSplashRadius > 0f)//Quáy chết nổ
-            {
+            {   
                 LevelManager.Instance.ExplodeAt (transform.position, _bulletSplashRadius, _bulletPower);
             }
 
