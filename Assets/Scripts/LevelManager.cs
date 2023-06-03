@@ -212,6 +212,7 @@ public class LevelManager : MonoBehaviour
         return newBullet;
     }
 
+    //Kích hoạt giảm máu quái
     public void ExplodeAt (Vector2 point, float radius, int damage)
     {
         foreach (Enemy enemy in _spawnedEnemiesQueue)
