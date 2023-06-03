@@ -39,8 +39,8 @@ public class LevelManager : MonoBehaviour
     //Thời gian trễ giữa mỗi lần Enemy xuất hiện
     [SerializeField] private float _spawnDelay = 5f;
 
-    //Danh sách chứa các đối tượng Enemy đã được tạo ra
-    private List<Enemy> _spawnedEnemies = new List<Enemy>();
+    [SerializeField] private int _maxEnemiesInScene = 5;
+    private Queue<Enemy> _spawnedEnemiesQueue = new Queue<Enemy>();
     //Thời gian còn lại cho mỗi lần Enemy xuất hiện tiếp theo
     private float _runningSpawnDelay;
 
@@ -83,38 +83,41 @@ public class LevelManager : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
-        //Check xem game kết thúc hay chưa
         if (IsOver)
         {
             return;
         }
 
-
-        _runningSpawnDelay -= Time.unscaledDeltaTime;
-        if (_runningSpawnDelay <= 0f)
+        if (_spawnedEnemiesQueue.Count < _maxEnemiesInScene)
         {
-            //Tạo ra một đối tượng Enemy mới và set giá trị cho _runningSpawnDelay = _spawnDelay = 5f
-            SpawnEnemy();
-            _runningSpawnDelay = _spawnDelay;
+            _runningSpawnDelay -= Time.unscaledDeltaTime;
+            if (_runningSpawnDelay <= 0f)
+            {
+                //Tạo ra một đối tượng Enemy mới và set giá trị cho _runningSpawnDelay = _spawnDelay = 5f
+                SpawnEnemy();
+                _runningSpawnDelay = _spawnDelay;
+            }
         }
+
 
         //Duyệt các đối tượng Tower trong danh sách _spawnedTowers
         //Check và thực hiện các họat động của đối tượng Tower
         foreach (Tower tower in _spawnedTowers)
         {
             //Check Enemy gần nhất
-            tower.CheckNearestEnemy(_spawnedEnemies);
+            tower.CheckNearestEnemy(_spawnedEnemiesQueue);
             //Tìm kiếm Enemy
             tower.SeekTarget();
             //Bắn Enemy
             tower.ShootTarget();
         }
 
-        //Duyệt qua các đối tượng trong danh sách _spawnedEnemies
-        //Check và thực hiện các hoạt động của mỗi đối tượng Enemy
-        foreach (Enemy enemy in _spawnedEnemies)
+        // Xử lý các enemy trong queue
+        int enemiesCount = _spawnedEnemiesQueue.Count;
+
+        for (int i = 0; i < enemiesCount; i++)
         {
-            //Check đối tượng Enemy có đang hoạt động hay không?
+            Enemy enemy = _spawnedEnemiesQueue.Peek();
             if (!enemy.gameObject.activeSelf)
             {
                 _spawnedEnemiesQueue.Dequeue();
@@ -123,7 +126,7 @@ public class LevelManager : MonoBehaviour
 
             //Tính toán và so sánh khoảng cách giữa vị trí hiện tại và vị trí mục tiêu có < 0.1f?
             //Nếu đúng thì Enemy đã đạt đến vị trí mục tiêu
-            if (Vector2.Distance(enemy.transform.position, enemy.TargetPosition) < 0.1f)
+            if (Vector2.Distance (enemy.transform.position, enemy.TargetPosition) < 0.1f)
             {
                 //Chuyển đến vị trí tiếp theo trên đường đi của Enemy
                 enemy.SetCurrentPathIndex(enemy.CurrentPathIndex + 1);
@@ -177,63 +180,83 @@ public class LevelManager : MonoBehaviour
         _spawnedTowers.Add(tower);
     }
 
-    private void SpawnEnemy()
+    //Tạo ra các đối tượng Enemy trong trò chơi
+    private void SpawnEnemy ()
     {
+        //Log
         Debug.Log("Run Spawn");
+        //Set lại số lượng Enemy
         SetTotalEnemy (--_enemyCounter);
+        //_enemyCounter < 0 thì tất cả Enemy được tạo ra
         if (_enemyCounter < 0)
         {
+            //check xem tất cả Enemy bị đánh bại hết chưa?
             bool isAllEnemyDestroyed = _spawnedEnemiesQueue.FirstOrDefault(e => e.gameObject.activeSelf) == null;
+            //isAllEnemyDestroyed = true thì game kết thúc và return
             if (isAllEnemyDestroyed)
             {
-                SetGameOver(true);
+                SetGameOver (true);
             }
             return;
         }
 
+        //Chọn 1 số ngẫu nhiên để chọn 1 Enemy ngẫu nhiên từ mảng Enemy _enemyPrefabs
         int randomIndex = Random.Range (0, _enemyPrefabs.Length);
+        //check xem tên của của Enemy có chứa số randomIndex + 1 hay không?
         string enemyIndexString = (randomIndex + 1).ToString ();
+        //Tìm Enemy không hoạt động và có tên chứa enemyIndexString trong _spawnedEnemiesQueue rồi gán cho newEnemyObj
         GameObject newEnemyObj = _spawnedEnemiesQueue.FirstOrDefault(e => !e.gameObject.activeSelf && e.name.Contains(enemyIndexString))?.gameObject;
+        //check tìm thấy Enemy có tên chứa enemyIndexString hay không
         if (newEnemyObj == null)
         {
-            newEnemyObj = Instantiate(_enemyPrefabs[randomIndex].gameObject);
+            newEnemyObj = Instantiate (_enemyPrefabs[randomIndex].gameObject);
         }
-
+        //Tạo 1 Enemy mới từ newEnemyObj
         Enemy newEnemy = newEnemyObj.GetComponent<Enemy> ();
+        //check xem newEnemyObj có trong _spawnedEnemiesQueue hay chưa
         if (!_spawnedEnemiesQueue.Contains (newEnemy))
         {
             _spawnedEnemiesQueue.Enqueue(newEnemy);
         }
-
+        //set newEnemy thành vị trí đầu của mảng _enemyPaths
         newEnemy.transform.position = _enemyPaths[0].position;
-        newEnemy.SetTargetPosition(_enemyPaths[1].position);
-        newEnemy.SetCurrentPathIndex(1);
-        newEnemy.gameObject.SetActive(true);
+        //set vị trí mục tiêu của đối tượng newEnemy thành vị trí thứ 2 trong mảng _enemyPaths
+        newEnemy.SetTargetPosition (_enemyPaths[1].position);
+        //set chỉ số đường đi hiện tại của đối tượng newEnemy thành 1.
+        newEnemy.SetCurrentPathIndex (1);
+        newEnemy.gameObject.SetActive (true);
     }
 
-    // Untuk menampilkan garis penghubung dalam window Scene
-    // tanpa harus di-Play terlebih dahulu
-    private void OnDrawGizmos()
+    //Vẽ đường đi
+    private void OnDrawGizmos ()
     {
+        //duyệt qua các điểm trong mảng _enemyPaths
         for (int i = 0; i < _enemyPaths.Length - 1; i++)
         {
+            //set màu cho đường đi
             Gizmos.color = Color.cyan;
-            Gizmos.DrawLine(_enemyPaths[i].position, _enemyPaths[i + 1].position);
+            //vẽ 1 đường đi từ vị trí i đến i + 1
+            Gizmos.DrawLine (_enemyPaths[i].position, _enemyPaths[i + 1].position);
         }
     }
 
-    public Bullet GetBulletFromPool(Bullet prefab)
+    //Tạo đạn và sử dụng lại
+    public Bullet GetBulletFromPool (Bullet prefab)
     {
-        GameObject newBulletObj = _spawnedBullets.Find(b => !b.gameObject.activeSelf && b.name.Contains(prefab.name))?.gameObject;
+        //tìm 1 đối tượng đạn không hoạt động và có tên chứa prefab.name gán cho newBulletObj
+        GameObject newBulletObj = _spawnedBullets.Find (b => !b.gameObject.activeSelf && b.name.Contains (prefab.name))?.gameObject;
+        //check không tìm thấy đạn thì tạo mới 1 đạn khác trong prefabs và gán lại cho newBulletObj
         if (newBulletObj == null)
         {
-            newBulletObj = Instantiate(prefab.gameObject);
+            newBulletObj = Instantiate (prefab.gameObject);
         }
 
-        Bullet newBullet = newBulletObj.GetComponent<Bullet>();
-        if (!_spawnedBullets.Contains(newBullet))
+        Bullet newBullet = newBulletObj.GetComponent<Bullet> ();
+        //check _spawnedBullets đã chứa đối tượng newBullet hay chưa
+        if (!_spawnedBullets.Contains (newBullet))
         {
-            _spawnedBullets.Add(newBullet);
+            //add newBullet vào _spawnedBullets
+            _spawnedBullets.Add (newBullet);
         }
 
         return newBullet;
@@ -242,45 +265,51 @@ public class LevelManager : MonoBehaviour
     //Kích hoạt giảm máu quái
     public void ExplodeAt (Vector2 point, float radius, int damage)
     {
+        //duyệt tất cả Enemy trong _spawnedEnemiesQueue
         foreach (Enemy enemy in _spawnedEnemiesQueue)
         {
+            //check enemy có hoạt động hay không
             if (enemy.gameObject.activeSelf)
             {
-                if (Vector2.Distance(enemy.transform.position, point) <= radius)
+                //check nếu khoảng cách giữa vị trí của enemy và điểm nổ nhỏ hơn hoặc bằng bán kính
+                if (Vector2.Distance (enemy.transform.position, point) <= radius)
                 {
-                    enemy.ReduceEnemyHealth(damage);
+                    //giảm máu bằng với damege được truyền vào
+                    enemy.ReduceEnemyHealth (damage);
                 }
             }
         }
     }
 
-    public void ReduceLives(int value)
+    //giảm số lượng enemy được phép vượt qua map
+    public void ReduceLives (int value)
     {
-        SetCurrentLives(_currentLives - value);
+        SetCurrentLives (_currentLives - value);
         if (_currentLives <= 0)
         {
-            SetGameOver(false);
+            SetGameOver (false);
         }
     }
 
-    public void SetCurrentLives(int currentLives)
+    //số lượng enemy còn lại được qua map
+    public void SetCurrentLives (int currentLives)
     {
-        // Mathf.Max fungsi nya adalah mengambil angka terbesar
-        // sehingga _currentLives di sini tidak akan lebih kecil dari 0
-        _currentLives = Mathf.Max(currentLives, 0);
+        _currentLives = Mathf.Max (currentLives, 0);
         _livesInfo.text = $"Lives: {_currentLives}";
     }
 
-    public void SetTotalEnemy(int totalEnemy)
+    //số lượng enemy còn lại xuất hiện
+    public void SetTotalEnemy (int totalEnemy)
     {
         _enemyCounter = totalEnemy;
-        _totalEnemyInfo.text = $"Total Enemy: {Mathf.Max(_enemyCounter, 0)}";
+        _totalEnemyInfo.text = $"Total Enemy: {Mathf.Max (_enemyCounter, 0)}";
     }
 
-    public void SetGameOver(bool isWin)
+    //set gameover
+    public void SetGameOver (bool isWin)
     {
         IsOver = true;
         _statusInfo.text = isWin ? "You Win!" : "You Lose!";
-        _panel.gameObject.SetActive(true);
+        _panel.gameObject.SetActive (true);
     }
 }
