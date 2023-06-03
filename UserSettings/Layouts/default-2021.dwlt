@@ -66,10 +66,10 @@ MonoBehaviour:
     serializedVersion: 2
     x: 1171.5
     y: 0
-    width: 364.5
-    height: 820
-  m_MinSize: {x: 276, y: 71}
-  m_MaxSize: {x: 4001, y: 4021}
+    width: 324
+    height: 627
+  m_MinSize: {x: 275, y: 50}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 13}
   m_Panes:
   - {fileID: 13}
@@ -804,7 +804,7 @@ MonoBehaviour:
   m_Position:
     m_Target: {x: -1.8287059, y: -0.6778127, z: 0.012758857}
     speed: 2
-    m_Value: {x: -1.8287059, y: -0.6778127, z: 0.012758857}
+    m_Value: {x: 2.8100977, y: -0.99618155, z: -1.0607951}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -857,7 +857,7 @@ MonoBehaviour:
   m_Size:
     m_Target: 8.724069
     speed: 2
-    m_Value: 8.724069
+    m_Value: 7.718157
   m_Ortho:
     m_Target: 1
     speed: 2
