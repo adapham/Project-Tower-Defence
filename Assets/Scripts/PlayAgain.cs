@@ -5,17 +5,17 @@ using UnityEngine.SceneManagement;
 
 public class PlayAgain : MonoBehaviour
 {
-    //Untuk Play Again
+    //Play again
     public void playAgain()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-    //untuk ke level 2
+    //Start play at sence with name is Level2
     public void nextScene()
     {
         SceneManager.LoadScene("Level2");
     }
-    //untuk ke level 1
+    //Start play at sence with name is Level1
     public void prevScene()
     {
         SceneManager.LoadScene("Level1");
