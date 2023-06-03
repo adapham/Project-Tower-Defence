@@ -18,22 +18,22 @@ public class TowerPlacement : MonoBehaviour
         
     }
 
-    // Fungsi yang terpanggil sekali ketika ada object Rigidbody yang menyentuh area collider
+    //OnTriggerEnter2D sẽ được gọi để kiểm tra xem có thể đặt tháp lên vị trí đó hay không
     private void OnTriggerEnter2D (Collider2D collision)
     {
-        if (_placedTower != null)
+        if (_placedTower != null) //Đã tồn tại
         {
             return;
         }
         Tower tower = collision.GetComponent<Tower> ();
-        if (tower != null)
+        if (tower != null) //Chưa tồn tại set mới
         {
             tower.SetPlacePosition (transform.position);
             _placedTower = tower;
         }
     }
 
-    // Kebalikan dari OnTriggerEnter2D, fungsi ini terpanggil sekali ketika object tersebut meninggalkan area collider
+    //OnTriggerExit2D sẽ được gọi để xóa tháp khỏi vị trí đó và đặt biến _placedTower về null. 
     private void OnTriggerExit2D (Collider2D collision)
     {
         if (_placedTower == null)

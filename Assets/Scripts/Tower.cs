@@ -62,7 +62,7 @@ public class Tower : MonoBehaviour
     }
 
     // Mengecek musuh terdekat
-    public void CheckNearestEnemy (List<Enemy> enemies)
+    public void CheckNearestEnemy (Queue<Enemy> enemies)
     {
         if (_targetEnemy != null)
         {

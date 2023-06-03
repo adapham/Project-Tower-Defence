@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -116,6 +117,7 @@ public class LevelManager : MonoBehaviour
             //Check đối tượng Enemy có đang hoạt động hay không?
             if (!enemy.gameObject.activeSelf)
             {
+                _spawnedEnemiesQueue.Dequeue();
                 continue;
             }
 
@@ -146,6 +148,9 @@ public class LevelManager : MonoBehaviour
                 //MoveToTarget() được gọi để di chuyển Enemy đến vị trí mục tiêu
                 enemy.MoveToTarget();
             }
+
+            _spawnedEnemiesQueue.Enqueue(enemy); // Enqueue enemy vừa được xử lý vào cuối queue
+            _spawnedEnemiesQueue.Dequeue(); // Dequeue enemy đầu tiên để xử lý enemy tiếp theo trong queue
         }
     }
 
@@ -174,10 +179,11 @@ public class LevelManager : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        SetTotalEnemy(--_enemyCounter);
+        Debug.Log("Run Spawn");
+        SetTotalEnemy (--_enemyCounter);
         if (_enemyCounter < 0)
         {
-            bool isAllEnemyDestroyed = _spawnedEnemies.Find(e => e.gameObject.activeSelf) == null;
+            bool isAllEnemyDestroyed = _spawnedEnemiesQueue.FirstOrDefault(e => e.gameObject.activeSelf) == null;
             if (isAllEnemyDestroyed)
             {
                 SetGameOver(true);
@@ -185,18 +191,18 @@ public class LevelManager : MonoBehaviour
             return;
         }
 
-        int randomIndex = Random.Range(0, _enemyPrefabs.Length);
-        string enemyIndexString = (randomIndex + 1).ToString();
-        GameObject newEnemyObj = _spawnedEnemies.Find(e => !e.gameObject.activeSelf && e.name.Contains(enemyIndexString))?.gameObject;
+        int randomIndex = Random.Range (0, _enemyPrefabs.Length);
+        string enemyIndexString = (randomIndex + 1).ToString ();
+        GameObject newEnemyObj = _spawnedEnemiesQueue.FirstOrDefault(e => !e.gameObject.activeSelf && e.name.Contains(enemyIndexString))?.gameObject;
         if (newEnemyObj == null)
         {
             newEnemyObj = Instantiate(_enemyPrefabs[randomIndex].gameObject);
         }
 
-        Enemy newEnemy = newEnemyObj.GetComponent<Enemy>();
-        if (!_spawnedEnemies.Contains(newEnemy))
+        Enemy newEnemy = newEnemyObj.GetComponent<Enemy> ();
+        if (!_spawnedEnemiesQueue.Contains (newEnemy))
         {
-            _spawnedEnemies.Add(newEnemy);
+            _spawnedEnemiesQueue.Enqueue(newEnemy);
         }
 
         newEnemy.transform.position = _enemyPaths[0].position;
@@ -233,9 +239,10 @@ public class LevelManager : MonoBehaviour
         return newBullet;
     }
 
-    public void ExplodeAt(Vector2 point, float radius, int damage)
+    //Kích hoạt giảm máu quái
+    public void ExplodeAt (Vector2 point, float radius, int damage)
     {
-        foreach (Enemy enemy in _spawnedEnemies)
+        foreach (Enemy enemy in _spawnedEnemiesQueue)
         {
             if (enemy.gameObject.activeSelf)
             {
