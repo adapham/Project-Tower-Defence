@@ -49,9 +49,9 @@ public class TowerUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragH
         _currentSpawnedTower.transform.position = targetPosition;
     }
 
-    // Implementasi dari Interface IEndDragHandler
-    // Fungsi ini terpanggil sekali ketika men-drop UI ini
-    public void OnEndDrag (PointerEventData eventData)
+    // Triển khai Giao diện IEndDragHandler
+     // Hàm này được gọi một lần khi hủy giao diện người dùng này
+     public void OnEndDrag (PointerEventData eventData)
     {
         if (_currentSpawnedTower.PlacePosition == null)
         {

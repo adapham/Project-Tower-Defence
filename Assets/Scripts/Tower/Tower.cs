@@ -22,22 +22,22 @@ public class Tower : MonoBehaviour
     private Enemy _targetEnemy;
     private Quaternion _targetRotation;
 
-    // Digunakan untuk menyimpan posisi yang akan ditempati selama tower di drag
+    //Được sử dụng để lưu vị trí sẽ bị chiếm giữ khi tháp đang được kéo
     public Vector2? PlacePosition { get; private set; }
 
     // Start is called before the first frame update
-    void Start()
+    public virtual void Start()
     {
         
     }
 
     // Update is called once per frame
-    void Update()
+    public virtual void Update()
     {
         
     }
 
-    // Fungsi yang digunakan untuk mengambil sprite pada Tower Head
+    //Chức năng lấy sprite trên Tower Head
     public Sprite GetTowerHeadIcon ()
     {
         return _towerHead.sprite;
@@ -53,7 +53,7 @@ public class Tower : MonoBehaviour
         transform.position = (Vector2) PlacePosition;
     }
 
-    // Mengubah order in layer pada tower yang sedang di drag
+    // Thay đổi thứ tự trong lớp trên tháp đang được kéo
     public void ToggleOrderInLayer (bool toFront)
     {
         int orderInLayer = toFront ? 2 : 0;
@@ -61,7 +61,7 @@ public class Tower : MonoBehaviour
         _towerHead.sortingOrder = orderInLayer;
     }
 
-    // Mengecek musuh terdekat
+    // Kiểm tra kẻ thù gần đó
     public void CheckNearestEnemy (Queue<Enemy> enemies)
     {
         if (_targetEnemy != null)
@@ -95,8 +95,8 @@ public class Tower : MonoBehaviour
         _targetEnemy = nearestEnemy;
     }
 
-    // Menembak musuh yang telah disimpan sebagai target
-    public void ShootTarget ()
+    // Bắn kẻ thù đã được lưu làm mục tiêu
+    public virtual void ShootTarget ()
     {
         if (_targetEnemy == null)
         {
@@ -120,7 +120,7 @@ public class Tower : MonoBehaviour
         }
     }
 
-    // Membuat tower selalu melihat ke arah musuh
+    // Làm cho tháp luôn nhìn vào kẻ thù
     public void SeekTarget ()
     {
         if (_targetEnemy == null)
