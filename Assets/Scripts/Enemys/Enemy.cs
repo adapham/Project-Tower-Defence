@@ -1,23 +1,38 @@
-﻿using System.Collections;
+﻿using Assets.Scripts;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private int _maxHealth = 1;
-    [SerializeField] private float _moveSpeed = 1f;
+    [SerializeField] private int _maxHealth;
+    [SerializeField] private float _moveSpeed;
     [SerializeField] private SpriteRenderer _healthBar; //Sprite object
     [SerializeField] private SpriteRenderer _healthFill; //Sprite máu
 
     private int _currentHealth; //Máu hiện tại
+    public static int _pointValue;
 
     public Vector3 TargetPosition { get; private set; } //Vị trí cần đến
     public int CurrentPathIndex { get; private set; } //Chỉ số đường đi hiện tại
+    public int MaxHealth { get => _maxHealth; set => _maxHealth = value; }
+    public float MoveSpeed { get => _moveSpeed; set => _moveSpeed = value; }
+
+    #region Constructor
+    public Enemy(int maxHealth, float moveSpeed)
+    {
+        MaxHealth = maxHealth;
+        MoveSpeed = moveSpeed;
+    }
+
+    public Enemy() { 
+    }
+    #endregion
 
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -36,7 +51,7 @@ public class Enemy : MonoBehaviour
     //Di chuyển đối tượng Enemy đến vị trí đích (TargetPosition) với tốc độ di chuyển (_moveSpeed) đã xác định.
     public void MoveToTarget ()
     {
-        transform.position = Vector3.MoveTowards (transform.position, TargetPosition, _moveSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards (transform.position, TargetPosition, MoveSpeed * Time.deltaTime);
     }
 
     //Đặt ví trí mục tiêu cho Enemy.
@@ -84,7 +99,7 @@ public class Enemy : MonoBehaviour
     }
 
     //Giảm số máu của đối tượng Enemy khi bị tấn công bằng một lượng sát thương (damage) đã xác định.
-    public void ReduceEnemyHealth (int damage)
+    public virtual void ReduceEnemyHealth (int damage)
     {
         _currentHealth -= damage;
         AudioPlayer.Instance.PlaySFX ("hit-enemy");
@@ -93,10 +108,18 @@ public class Enemy : MonoBehaviour
         {
             _currentHealth = 0;
             gameObject.SetActive (false);
+            _pointValue++;
+            LevelManager.Instance.SetTotalPoint(_pointValue);
+            Debug.Log("Point: " + _pointValue);
             AudioPlayer.Instance.PlaySFX ("enemy-die");
         }
 
-        float healthPercentage = (float) _currentHealth / _maxHealth;
+        float healthPercentage = (float) _currentHealth / MaxHealth;
         _healthFill.size = new Vector2 (healthPercentage * _healthBar.size.x, _healthBar.size.y);
+    }
+
+    public int ResultPoint()
+    {
+        return _pointValue;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts;
+using Assets.Scripts.Enemys;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,9 +39,7 @@ public class LevelManager : MonoBehaviour
     //Một mảng chứa các Transform đại diện cho các đường đi của Enemy
     [SerializeField] private Transform[] _enemyPaths;
     //Thời gian trễ giữa mỗi lần Enemy xuất hiện
-    //[SerializeField] private float _spawnDelay = 5f;
-
-    //[SerializeField] private int _maxEnemiesInScene = 5;
+    
     private Queue<Enemy> _spawnedEnemiesQueue = new Queue<Enemy>();
     //Thời gian còn lại cho mỗi lần Enemy xuất hiện tiếp theo
     private float _runningSpawnDelay;
@@ -50,6 +49,8 @@ public class LevelManager : MonoBehaviour
 
     public bool IsOver { get; private set; }
 
+    //[SerializeField] private float _spawnDelay = 5f;
+    //[SerializeField] private int _maxEnemiesInScene = 5;
     //[SerializeField] private int _maxLives = 3;
     //[SerializeField] private int _totalEnemy = 15;
 
@@ -58,14 +59,16 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private Text _statusInfo;
     [SerializeField] private Text _livesInfo;
     [SerializeField] private Text _totalEnemyInfo;
+    [SerializeField] private Text _totalPoint;
 
     //Số lượng Enemy còn được phép đi qua map và số lượng Enemy còn lại để tiêu diệt
     private int _currentLives;
     private int _enemyCounter;
+    private int _enemyPoint;
 
     //Set Data IO
-    // configuration data
     static ConfigurationData configurationData;
+    #region Set Properties
     public static float _spawnDelay
     {
         get
@@ -93,6 +96,7 @@ public class LevelManager : MonoBehaviour
             return configurationData.TotalEnemy;
         }
     }
+    #endregion
 
     // Set giá trị cho _currentLives, _enemyCounter bằng _maxLives, _totalEnemy
     //Tạo các đối tượng TowerUI
@@ -106,6 +110,7 @@ public class LevelManager : MonoBehaviour
 
         SetCurrentLives (_maxLives);
         SetTotalEnemy (_totalEnemy);
+        SetTotalPoint (0);
         InstantiateAllTowerUI ();
     }
 
@@ -341,9 +346,25 @@ public class LevelManager : MonoBehaviour
         _totalEnemyInfo.text = $"Total Enemy: {Mathf.Max (_enemyCounter, 0)}";
     }
 
+    //Số lượng điểm
+    public void SetTotalPoint(int totalPoint)
+    {
+        _enemyPoint = totalPoint;
+        if (_totalPoint == null)
+        {
+            Debug.Log("_totalPoint is null");
+        }
+        _totalPoint.text = $"Total Point: {Mathf.Max(_enemyPoint, 0)}";
+    }
+
     //set gameover
     public void SetGameOver (bool isWin)
     {
+        Enemy point = new Enemy();
+        int resultPoint = point.ResultPoint();
+        Debug.Log("Result: " + resultPoint);
+        configurationData.SaveToFile(resultPoint);
+
         IsOver = true;
         _statusInfo.text = isWin ? "You Win!" : "You Lose!";
         _panel.gameObject.SetActive (true);
