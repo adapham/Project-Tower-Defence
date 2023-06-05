@@ -499,18 +499,18 @@ MonoBehaviour:
       m_ExpandedIDs: 2afbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: Enemy Variant 3
+        m_OriginalName: Enemy Variant 3
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: -36706
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 4}
       m_SearchString: 
@@ -804,7 +804,7 @@ MonoBehaviour:
   m_Position:
     m_Target: {x: 2.8100977, y: -0.99618155, z: -1.0607951}
     speed: 2
-    m_Value: {x: 2.8100977, y: -0.99618155, z: -1.0607951}
+    m_Value: {x: 0, y: -0.24305558, z: 90}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -857,7 +857,7 @@ MonoBehaviour:
   m_Size:
     m_Target: 7.718157
     speed: 2
-    m_Value: 7.718157
+    m_Value: 11.46141
   m_Ortho:
     m_Target: 1
     speed: 2
