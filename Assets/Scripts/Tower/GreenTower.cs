@@ -7,6 +7,7 @@ public class GreenTower : Tower
     // Start is called before the first frame update
     public override void Start()
     {
+        BulletSpeed(2f);
         base.Start();
     }
 

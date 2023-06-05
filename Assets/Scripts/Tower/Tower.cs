@@ -24,7 +24,10 @@ public class Tower : MonoBehaviour
 
     //Được sử dụng để lưu vị trí sẽ bị chiếm giữ khi tháp đang được kéo
     public Vector2? PlacePosition { get; private set; }
-
+    protected void BulletSpeed(float bulletSpeed)
+    {
+        _bulletSpeed=bulletSpeed;
+    }
     // Start is called before the first frame update
     public virtual void Start()
     {
