@@ -49,11 +49,6 @@ public class LevelManager : MonoBehaviour
 
     public bool IsOver { get; private set; }
 
-    //[SerializeField] private float _spawnDelay = 5f;
-    //[SerializeField] private int _maxEnemiesInScene = 5;
-    //[SerializeField] private int _maxLives = 3;
-    //[SerializeField] private int _totalEnemy = 15;
-
     //4 đối tượng UI để hiển thị trong game
     [SerializeField] private GameObject _panelWin;
     [SerializeField] private GameObject _panelLose;
