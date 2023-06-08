@@ -8,6 +8,7 @@ public class PlayAgain : MonoBehaviour
     //Play again
     public void playAgain()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     //Start play at sence with name is Level2
@@ -19,5 +20,11 @@ public class PlayAgain : MonoBehaviour
     public void prevScene()
     {
         SceneManager.LoadScene("Level1");
+    }
+
+    public void levelScene()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("ChooseLevel");
     }
 }

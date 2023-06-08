@@ -55,7 +55,8 @@ public class LevelManager : MonoBehaviour
     //[SerializeField] private int _totalEnemy = 15;
 
     //4 đối tượng UI để hiển thị trong game
-    [SerializeField] private GameObject _panel;
+    [SerializeField] private GameObject _panelWin;
+    [SerializeField] private GameObject _panelLose;
     [SerializeField] private Text _statusInfo;
     [SerializeField] private Text _livesInfo;
     [SerializeField] private Text _totalEnemyInfo;
@@ -367,6 +368,14 @@ public class LevelManager : MonoBehaviour
 
         IsOver = true;
         _statusInfo.text = isWin ? "You Win!" : "You Lose!";
-        _panel.gameObject.SetActive (true);
+        if (_statusInfo.text.Equals("You Win!"))
+        {
+            _panelWin.gameObject.SetActive (true);
+        }
+        else
+        {
+            _panelLose.gameObject.SetActive (true);
+        }
+        
     }
 }

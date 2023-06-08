@@ -10,7 +10,7 @@ namespace Assets.Scripts
         #region Fields
 
         const string ConfigurationDataFileName = "ConfigurationData.csv";
-        const string ResultDataFileName = "D:\\FU_SUMMER2023\\PRU221m\\ProjectTowerDefense\\Project-Tower-Defence\\Assets\\StreamingAssets\\ResultData.csv";
+        const string ResultDataFileName = "C:\\SU23\\PRU221m\\Project-Tower-Defence\\Assets\\StreamingAssets\\ResultData.csv";
 
         // configuration data with default values
         static float _spawnDelay;
