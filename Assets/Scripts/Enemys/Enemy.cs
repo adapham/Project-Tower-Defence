@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour
 
     private int _currentHealth; //Máu hiện tại
     public static int _pointValue;
-    public static int _MoneyValue = 100;
+    public static int _MoneyValue=10;
 
 
     public Vector3 TargetPosition { get; private set; } //Vị trí cần đến
@@ -112,8 +112,13 @@ public class Enemy : MonoBehaviour
             gameObject.SetActive (false);
             _pointValue++;
             LevelManager.Instance.SetTotalPoint(_pointValue);
-            _MoneyValue += 10;
-            LevelManager.Instance.SetTotalMoney(_MoneyValue);
+            LevelManager levelManager = FindObjectOfType<LevelManager>();
+
+            var total = levelManager.getMoney();
+
+            total += _MoneyValue;
+
+            LevelManager.Instance.SetTotalMoney(total);
 
             Debug.Log("Point: " + _pointValue);
             AudioPlayer.Instance.PlaySFX ("enemy-die");

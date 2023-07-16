@@ -9,27 +9,34 @@ public class TowerPlacement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     //OnTriggerEnter2D sẽ được gọi để kiểm tra xem có thể đặt tháp lên vị trí đó hay không
-    private void OnTriggerEnter2D (Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
+        LevelManager levelManager = FindObjectOfType<LevelManager>();
+
+        var total = levelManager.getMoney();
+
         if (_placedTower != null) //Đã tồn tại
         {
             return;
         }
-        Tower tower = collision.GetComponent<Tower> ();
-        if (tower != null) //Chưa tồn tại set mới
+        Tower tower = collision.GetComponent<Tower>();
+     
+        if (total>=50 && tower != null) //Chưa tồn tại set mới
         {
-            tower.SetPlacePosition (transform.position);
-            _placedTower = tower;
+                tower.SetPlacePosition(transform.position);
+                _placedTower = tower;
+                levelManager.SetMinusMoney(50);
+
         }
     }
 

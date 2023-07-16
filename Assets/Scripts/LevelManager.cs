@@ -198,7 +198,26 @@ public class LevelManager : MonoBehaviour
             _spawnedEnemiesQueue.Dequeue(); // Dequeue enemy đầu tiên để xử lý enemy tiếp theo trong queue
         }
     }
+    public void SetTotalMoney(int totalMoney)
+    {
+        _enemyMoney = totalMoney;
+        if (_totalMoney == null)
+        {
+            Debug.Log("_totalMoney is null");
+        }
+        _totalMoney.text = $"Total  money: {Mathf.Max(_enemyMoney, 10)}";
+    }
+    public void SetMinusMoney(int money)
+    {
+        _enemyMoney -= money;
 
+        _totalMoney.text = $"Total  money: {_enemyMoney}";
+    }
+    public int getMoney()
+    {
+        return _enemyMoney;
+
+    }
     //Tạo ra UI cho các đối tượng Tower
     private void InstantiateAllTowerUI()
     {
@@ -357,16 +376,8 @@ public class LevelManager : MonoBehaviour
         }
         _totalPoint.text = $"Total Point: {Mathf.Max(_enemyPoint, 0)}";
     }
-    public void SetTotalMoney(int totalMoney)
-    {
-        _enemyMoney = totalMoney;
-        if (_totalMoney == null)
-        {
-            Debug.Log("_totalMoney is null");
-        }
-        _totalMoney.text = $"Total  money: {Mathf.Max(_enemyMoney, 10)}";
-    }
 
+    
 
     //set gameover
     public void SetGameOver(bool isWin)
