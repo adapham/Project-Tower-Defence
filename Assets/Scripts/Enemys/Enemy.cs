@@ -13,6 +13,8 @@ public class Enemy : MonoBehaviour
 
     private int _currentHealth; //Máu hiện tại
     public static int _pointValue;
+    public static int _MoneyValue = 100;
+
 
     public Vector3 TargetPosition { get; private set; } //Vị trí cần đến
     public int CurrentPathIndex { get; private set; } //Chỉ số đường đi hiện tại
@@ -110,6 +112,9 @@ public class Enemy : MonoBehaviour
             gameObject.SetActive (false);
             _pointValue++;
             LevelManager.Instance.SetTotalPoint(_pointValue);
+            _MoneyValue += 10;
+            LevelManager.Instance.SetTotalMoney(_MoneyValue);
+
             Debug.Log("Point: " + _pointValue);
             AudioPlayer.Instance.PlaySFX ("enemy-die");
         }
