@@ -1,15 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Tower : MonoBehaviour
 {
     // Tower Component
     [SerializeField] private SpriteRenderer _towerPlace;
     [SerializeField] private SpriteRenderer _towerHead;
+    [SerializeField] GameObject levelUp;
 
     // Tower Properties
-    [SerializeField] private int _shootPower = 1;
+    [SerializeField] static int _shootPower = 2;
     [SerializeField] private float _shootDistance = 1f;
     [SerializeField] private float _shootDelay = 5f;
     [SerializeField] private float _bulletSpeed = 1f;
@@ -20,6 +22,8 @@ public class Tower : MonoBehaviour
     private float _runningShootDelay;
     private Enemy _targetEnemy;
     private Quaternion _targetRotation;
+    public Button myButton;
+
 
     //Được sử dụng để lưu vị trí sẽ bị chiếm giữ khi tháp đang được kéo
     public Vector2? PlacePosition { get; private set; }
@@ -30,13 +34,32 @@ public class Tower : MonoBehaviour
     // Start is called before the first frame update
     public virtual void Start()
     {
+        myButton.onClick.AddListener(OnButtonClick);        
+    }
+    public void OnButtonClick()
+    {
+        LevelManager levelManager = FindObjectOfType<LevelManager>();
+        levelManager.SetMinusMoney(20);
+
+        _shootPower += 1;
+        Debug.Log(_shootPower);
         
     }
-
     // Update is called once per frame
     public virtual void Update()
     {
-        
+        LevelManager levelManager = FindObjectOfType<LevelManager>();
+
+        var total = levelManager.getMoney();
+        Debug.Log(total);
+        if (total >= 20)
+        {
+            levelUp.SetActive(true);
+        }
+        else
+        {
+            levelUp.SetActive(false);
+        }
     }
 
     //Chức năng lấy sprite trên Tower Head
@@ -113,9 +136,12 @@ public class Tower : MonoBehaviour
             {
                 return;
             }
-            Bullet bullet = LevelManager.Instance.GetBulletFromPool (_bulletPrefab);
+            LevelManager levelManager = FindObjectOfType<LevelManager>();
+            Bullet bullet = levelManager.GetBulletFromPool(_bulletPrefab);
             bullet.transform.position = transform.position;
+            
             bullet.SetProperties (_shootPower, _bulletSpeed, _bulletSplashRadius);
+            Debug.Log(_shootPower + "dsadas");
             bullet.SetTargetEnemy (_targetEnemy);
             bullet.gameObject.SetActive (true);
             _runningShootDelay = _shootDelay;
